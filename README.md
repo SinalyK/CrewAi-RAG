@@ -21,7 +21,7 @@ uv add streamlit
 ```
 ### Customizing
 
-**Add your `GEMINI_API_KEY` into the `.env` file**
+**Add your `GEMINI_API_KEY` and `MODEL=gemini/gemini-1.5-flash` into the `.env` file**
 
 ## Running the Project
 
