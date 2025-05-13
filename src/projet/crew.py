@@ -1,5 +1,6 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
+from tool.custom_tool import RAGPDFTool
 
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -19,8 +20,9 @@ class Projet():
     # https://docs.crewai.com/concepts/agents#agent-tools
     @agent
     def researcher(self) -> Agent:
-        return Agent(
+        return Agent( 
             config=self.agents_config['researcher'],
+            tool=[RAGPDFTool()]
             verbose=True
         )
     
