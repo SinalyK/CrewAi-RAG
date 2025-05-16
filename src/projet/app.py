@@ -1,3 +1,10 @@
+import sys
+try:
+    import pysqlite3
+    sys.modules["sqlite3"] = sys.modules["pysqlite3"]
+except ImportError:
+    pass
+
 from datetime import datetime
 import streamlit as st 
 from projet.crew import Projet
