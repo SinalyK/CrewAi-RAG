@@ -1,3 +1,9 @@
+import sys
+try:
+    import pysqlite3
+    sys.modules["sqlite3"] = sys.modules["pysqlite3"]
+except ImportError:
+    pass
 #!/usr/bin/env python
 import sys
 import warnings

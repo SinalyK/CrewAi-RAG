@@ -1,6 +1,14 @@
+import sys
+try:
+    import pysqlite3
+    sys.modules["sqlite3"] = sys.modules["pysqlite3"]
+except ImportError:
+    pass
+
 from crewai.tools import BaseTool
 from typing import Type
 from pydantic import BaseModel, Field
+
 from langchain.vectorstores import Chroma
 from langchain.embeddings import SentenceTransformerEmbeddings
 
