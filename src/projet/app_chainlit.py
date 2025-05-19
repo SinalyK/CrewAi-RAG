@@ -37,11 +37,9 @@ class MarkdownPDF(FPDF):
             # Listes à puces
             elif re.match(r'^[-*+] ', line):
                 self.cell(5)
-                # Utilise un tiret simple pour éviter les problèmes d'encodage
                 self.cell(0, 8, '- ' + line[2:], ln=1)
             # Gras/italique
             else:
-                # Remplace **gras** et *italique* par du texte simple (FPDF ne supporte pas le style inline)
                 text = re.sub(r'\*\*(.*?)\*\*', r'\1', line)
                 text = re.sub(r'\*(.*?)\*', r'\1', text)
                 self.multi_cell(0, 8, text)
@@ -105,6 +103,11 @@ def clean_latin1(text: str) -> str:
 async def save_article_as_pdf(title: str, content: str, folder: str = "articles") -> str:
     """Transforme le markdown en texte formaté (titres, listes, etc.) puis enregistre en PDF."""
     os.makedirs(folder, exist_ok=True)
+    title = title.replace('/', '').replace('\\', '').replace(':', '').replace('?', '').replace('*', '')
+    title = re.sub(r'[<>|]', '', title)  # Remplace les caractères interdits
+    title = re.sub(r'\s+', '_', title)  # Remplace les espaces par des underscores
+    title = title[:100]  # Limite la longueur du titre
+    # Crée le nom de fichier
     filename = os.path.join(folder, f"{title}.pdf")
     pdf = MarkdownPDF()
     pdf.add_page()
@@ -118,7 +121,7 @@ async def save_article_as_pdf(title: str, content: str, folder: str = "articles"
 async def main(message: cl.Message):
     content = message.content.strip()
     if content.lower().startswith("pdf "):
-        # Usage: pdf <url> <nom_fichier.pdf>
+       
         parts = content.split()
         if len(parts) < 3:
             await cl.Message(content="Utilisation : pdf <url> <nom_fichier.pdf>").send()
@@ -139,7 +142,7 @@ async def main(message: cl.Message):
     }
     try:
         result = Projet().crew().kickoff(inputs=inputs)
-        # Correction : CrewOutput n'a pas d'attribut 'split', on extrait le texte de l'article
+
         article_text = str(result.output) if hasattr(result, 'output') else str(result)
         title = article_text.split('\n')[0].strip()[:100].replace('/', '_').replace('\\', '_')
         pdf_path = await save_article_as_pdf(title, article_text)
